@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piano Mezza Maratona · Nike Run Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#111;color:#fff;min-height:100vh}
+.nrc-hero{background:#000;padding:2.5rem 2rem 2rem;border-bottom:1px solid #222}
+.nrc-eyebrow{font-size:11px;font-weight:700;letter-spacing:.15em;color:#FF5722;text-transform:uppercase;margin-bottom:.5rem}
+.nrc-title{font-family:'Bebas Neue',sans-serif;font-size:64px;line-height:1;letter-spacing:.02em;color:#fff;margin-bottom:.3rem}
+.nrc-subtitle{font-size:13px;color:#888;margin-bottom:1.4rem}
+.nrc-stats-row{display:flex;gap:2rem;flex-wrap:wrap}
+.nrc-stat{display:flex;flex-direction:column}
+.nrc-stat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:#FF5722;line-height:1}
+.nrc-stat-label{font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+.progress-wrap{padding:1.5rem 2rem 1rem}
+.progress-label{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;display:flex;justify-content:space-between}
+.progress-track{background:#222;border-radius:2px;height:4px;overflow:hidden}
+.progress-fill{background:linear-gradient(90deg,#FF5722,#FF9800);height:100%;border-radius:2px;width:6%}
+.legend-row{display:flex;gap:1rem;flex-wrap:wrap;padding:.75rem 2rem 1rem}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:#666}
+.legend-dot{width:8px;height:8px;border-radius:1px}
+.weeks-container{padding:0 2rem 3rem}
+.week-block{margin-bottom:2.5rem}
+.week-num{font-family:'Bebas Neue',sans-serif;font-size:13px;color:#555;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.week-phase-badge{font-size:10px;font-weight:700;letter-spacing:.1em;padding:2px 8px;border-radius:2px;text-transform:uppercase}
+.phase-base{background:#1a2a1a;color:#4CAF50}
+.phase-sviluppo{background:#1a1a2a;color:#7C4DFF}
+.phase-intensita{background:#2a1a1a;color:#FF5722}
+.phase-taper{background:#1a2a28;color:#00BCD4}
+.phase-gara{background:#2a1f0a;color:#FFC107}
+.section-line{height:1px;background:#222;margin-bottom:12px}
+.days-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:640px){.days-grid{grid-template-columns:1fr}}
+.day-card{background:#1a1a1a;border-radius:6px;border:1px solid #2a2a2a;padding:14px;cursor:pointer;transition:border-color .15s;position:relative}
+.day-card:hover{border-color:#FF5722}
+.day-card.completed{border-color:#222;opacity:.55}
+.day-card.completed::after{content:'✓ COMPLETATO';position:absolute;top:8px;right:8px;font-size:8px;font-weight:700;letter-spacing:.1em;color:#4CAF50}
+.day-card.race-card{border-color:#FFC107;background:#1a1700}
+.day-date{font-size:10px;font-weight:600;color:#555;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.day-type-tag{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:2px;margin-bottom:8px}
+.tag-easy{background:#1a2a1a;color:#4CAF50}
+.tag-tempo{background:#1a1a2a;color:#7C4DFF}
+.tag-long{background:#2a1500;color:#FF9800}
+.tag-intervals{background:#2a1a1a;color:#FF5722}
+.tag-race{background:#2a1f0a;color:#FFC107}
+.tag-recovery{background:#1a2020;color:#00BCD4}
+.day-name{font-family:'Bebas Neue',sans-serif;font-size:20px;line-height:1.1;margin-bottom:8px;color:#fff}
+.day-meta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.meta-item{display:flex;flex-direction:column}
+.meta-val{font-size:14px;font-weight:700;color:#fff;line-height:1}
+.meta-key{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:.08em;margin-top:1px}
+.day-desc{font-size:11px;color:#666;line-height:1.5;border-top:1px solid #222;padding-top:8px;margin-top:4px}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal-box{background:#0d0d0d;border:1px solid #333;border-radius:10px;width:100%;max-width:620px;max-height:90vh;overflow-y:auto}
+.dp-header{background:#FF5722;padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:flex-start;border-radius:10px 10px 0 0;position:sticky;top:0}
+.dp-title{font-family:'Bebas Neue',sans-serif;font-size:26px;color:#fff;line-height:1.1}
+.dp-date-label{font-size:11px;color:rgba(255,255,255,.7);margin-top:2px}
+.dp-close{background:none;border:none;color:rgba(255,255,255,.8);font-size:22px;cursor:pointer;padding:0;line-height:1}
+.dp-body{padding:1.25rem}
+.dp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.25rem}
+.dp-stat{background:#1a1a1a;border-radius:4px;padding:10px 12px}
+.dp-stat-val{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#FF5722;line-height:1}
+.dp-stat-key{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.dp-section-title{font-size:10px;font-weight:700;letter-spacing:.15em;color:#FF5722;text-transform:uppercase;margin:1rem 0 .5rem;padding-bottom:4px;border-bottom:1px solid #222}
+.splits-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.75rem}
+.split-pill{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:3px;padding:6px 10px;text-align:center;min-width:90px}
+.split-pill.fast{border-color:#FF5722}
+.split-pill.moderate{border-color:#7C4DFF}
+.split-pill.easy{border-color:#4CAF50}
+.split-n{font-size:9px;color:#555;text-transform:uppercase}
+.split-pace{font-family:'Bebas Neue',sans-serif;font-size:16px;color:#fff}
+.split-desc{font-size:9px;color:#666}
+.nutrition-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(max-width:500px){.nutrition-grid{grid-template-columns:1fr}.dp-grid{grid-template-columns:repeat(2,1fr)}}
+.nutri-block{background:#1a1a1a;border-radius:4px;padding:10px 12px}
+.nutri-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.nutri-label.pre{color:#FF9800}
+.nutri-label.during{color:#00BCD4}
+.nutri-label.post{color:#4CAF50}
+.nutri-items{font-size:11px;color:#888;line-height:1.7;list-style:none}
+.nutri-items li::before{content:'→ ';color:#555}
+.summary-bar{background:#0d0d0d;border-top:1px solid #222;padding:1.5rem 2rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+@media(max-width:480px){.summary-bar{grid-template-columns:repeat(2,1fr)}}
+.sum-val{font-family:'Bebas Neue',sans-serif;font-size:24px;color:#FF5722}
+.sum-key{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.08em}
+</style>
+</head>
+<body>
+
+<div class="nrc-hero">
+  <p class="nrc-eyebrow">Nike Run Club · Piano Personalizzato</p>
+  <h1 class="nrc-title">MEZZA<br>MARATONA</h1>
+  <p class="nrc-subtitle">Runner 25 anni · 60-62 kg · Base 10K @ 5:00–5:30/km · 12 settimane</p>
+  <div class="nrc-stats-row">
+    <div class="nrc-stat"><span class="nrc-stat-val">21.1</span><span class="nrc-stat-label">km obiettivo</span></div>
+    <div class="nrc-stat"><span class="nrc-stat-val">12</span><span class="nrc-stat-label">settimane</span></div>
+    <div class="nrc-stat"><span class="nrc-stat-val">36</span><span class="nrc-stat-label">allenamenti</span></div>
+    <div class="nrc-stat"><span class="nrc-stat-val">~2h</span><span class="nrc-stat-label">target gara</span></div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-label"><span>Progressione piano</span><span>6% completato</span></div>
+  <div class="progress-track"><div class="progress-fill"></div></div>
+</div>
+
+<div class="legend-row">
+  <div class="legend-item"><div class="legend-dot" style="background:#4CAF50"></div>Easy/Recovery</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#7C4DFF"></div>Tempo run</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#FF9800"></div>Long run</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#FF5722"></div>Ripetute</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#FFC107"></div>Gara</div>
+</div>
+
+<div class="weeks-container" id="weeks-container"></div>
+
+<div class="summary-bar">
+  <div><div class="sum-val">~480</div><div class="sum-key">km totali piano</div></div>
+  <div><div class="sum-val">Lun/Mer/Sab</div><div class="sum-key">giorni allenamento</div></div>
+  <div><div class="sum-val">5:00–6:30</div><div class="sum-key">range ritmi /km</div></div>
+  <div><div class="sum-val">~2:00</div><div class="sum-key">obiettivo gara</div></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal-box" id="modal-box">
+    <div class="dp-header">
+      <div>
+        <div class="dp-title" id="dp-title"></div>
+        <div class="dp-date-label" id="dp-date"></div>
+      </div>
+      <button class="dp-close" onclick="closePanel()">✕</button>
+    </div>
+    <div class="dp-body" id="dp-body"></div>
+  </div>
+</div>
+
+<script>
+const PHASES={1:{name:'Base aerobica',cls:'phase-base'},2:{name:'Base aerobica',cls:'phase-base'},3:{name:'Base aerobica',cls:'phase-base'},4:{name:'Sviluppo',cls:'phase-sviluppo'},5:{name:'Sviluppo',cls:'phase-sviluppo'},6:{name:'Sviluppo',cls:'phase-sviluppo'},7:{name:'Intensità',cls:'phase-intensita'},8:{name:'Intensità',cls:'phase-intensita'},9:{name:'Intensità',cls:'phase-intensita'},10:{name:'Taper',cls:'phase-taper'},11:{name:'Taper',cls:'phase-taper'},12:{name:'Gara',cls:'phase-gara'}};
+
+const WORKOUTS=[
+  {w:1,d:'Lun 15 giu',type:'easy',tag:'tag-easy',tagLabel:'Easy Run',name:'Corsa Facile + Attivazione',km:'6',pace:'5:30',rpe:'RPE 3-4',desc:'Riscaldamento piano, ritmo conversazionale. Primo allenamento del piano.',completed:true,splits:null,stats:['6km','5:30/km','33min','RPE 3-4'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['30min prima: banana + caffè','Carboidrati semplici','Idratazione: 300ml acqua'],during:['Solo acqua per 6km','Nessun gel necessario','Sorsi ogni 2km se caldo'],post:['Entro 30min: yogurt greco + miele','Proteina + carboidrati','500ml acqua o sports drink']}},
+  {w:1,d:'Mer 17 giu',type:'intervals',tag:'tag-intervals',tagLabel:'Ripetute',name:'Ripetute Brevi 6×400m',km:'7',pace:'Variabile',rpe:'RPE 7-8',desc:'Riscaldamento 2km, 6 ripetute da 400m con recupero, defaticamento 1km.',completed:true,splits:[{n:'Riscaldamento',pace:'5:45/km',desc:'2km facile',cls:'easy'},{n:'400m ×1',pace:'4:30/km',desc:'Sforzo medio-alto',cls:'fast'},{n:'Recupero',pace:'6:30/km',desc:'200m cammino/jogging',cls:'easy'},{n:'400m ×2',pace:'4:25/km',desc:'Sforzo medio-alto',cls:'fast'},{n:'Recupero',pace:'6:30/km',desc:'200m cammino/jogging',cls:'easy'},{n:'400m ×3-6',pace:'4:20/km',desc:'Sforzo costante',cls:'fast'},{n:'Recupero',pace:'6:30/km',desc:'200m tra ogni ripetuta',cls:'easy'},{n:'Defaticamento',pace:'5:50/km',desc:'1km easy',cls:'easy'}],stats:['7km','4:20-5:45','~38min','RPE 7-8'],statKeys:['distanza','ritmo range','tempo est.','sforzo'],nutri:{pre:['60min prima: toast + marmellata','Oppure: riso soffiato + latte','Caffeina 40min prima (opzionale)'],during:['Acqua ai recuperi','Gel se >45min allenamento','Elettroliti se caldo ≥28°C'],post:['Entro 20min: 20-25g proteine','Es. shake proteico + banana','Pasto completo entro 2h']}},
+  {w:1,d:'Sab 20 giu',type:'long',tag:'tag-long',tagLabel:'Long Run',name:'Long Run Progressiva',km:'10',pace:'5:30→5:15',rpe:'RPE 4-5',desc:'Lunga progressiva: primi 5km easy, ultimi 5km leggermente più veloci.',splits:[{n:'km 1-3',pace:'5:40/km',desc:'Riscaldamento graduale',cls:'easy'},{n:'km 4-7',pace:'5:25/km',desc:'Ritmo aerobico base',cls:'moderate'},{n:'km 8-10',pace:'5:10/km',desc:'Progressione finale',cls:'fast'}],stats:['10km','5:10-5:40','~54min','RPE 4-5'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['90min prima: avena + frutta secca','Pasto ricco di carboidrati','500ml acqua nelle 2h precedenti'],during:['Acqua ogni 3-4km','Gel o dattero al km 6-7','Sports drink se caldo'],post:['Pasto completo entro 45min','Pasta/riso + proteina + verdure','Reintegro fluidi: 1.5x il peso perso']}},
+  {w:2,d:'Lun 22 giu',type:'easy',tag:'tag-easy',tagLabel:'Easy Run',name:'Recovery + Strides',km:'6',pace:'5:30',rpe:'RPE 3',desc:'Corsa facile, 4 allunghi da 100m a fine allenamento.',splits:[{n:'km 1-6',pace:'5:35/km',desc:'Corsa conversazionale',cls:'easy'},{n:'Allungo ×4',pace:'4:10/km',desc:'100m × 4, recupero walk 60s',cls:'fast'}],stats:['6.4km','5:35/km','~36min','RPE 3'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['30min prima: frutta fresca','Banana o mela','300ml acqua'],during:['Solo acqua','Nessun gel per 6km'],post:['Yogurt greco + cereali','Proteine e carboidrati leggeri','400ml acqua']}},
+  {w:2,d:'Mer 24 giu',type:'tempo',tag:'tag-tempo',tagLabel:'Tempo Run',name:'Tempo Run 20min',km:'7',pace:'4:50-5:00',rpe:'RPE 6-7',desc:'2km riscaldamento, 20min a ritmo soglia, 1.5km defaticamento.',splits:[{n:'Riscaldamento',pace:'5:40/km',desc:'2km progressivo',cls:'easy'},{n:'Tempo 0-7min',pace:'5:00/km',desc:'Trova il ritmo soglia',cls:'moderate'},{n:'Tempo 7-15min',pace:'4:55/km',desc:'Mantieni la costanza',cls:'moderate'},{n:'Tempo 15-20min',pace:'4:50/km',desc:'Finale compatto',cls:'fast'},{n:'Defaticamento',pace:'5:50/km',desc:'1.5km easy',cls:'easy'}],stats:['7km','4:50-5:00','~37min','RPE 6-7'],statKeys:['distanza','ritmo soglia','tempo est.','sforzo'],nutri:{pre:['45min prima: crackers + burro arachidi','Carboidrati + proteine','400ml acqua'],during:['Sip acqua al riscaldamento','Nessun gel per 7km'],post:['Entro 30min: latte cioccolato','Oppure shake proteico','Pasto con riso + pollo + verdure']}},
+  {w:2,d:'Sab 27 giu',type:'long',tag:'tag-long',tagLabel:'Long Run',name:'Long Run Aerobica',km:'12',pace:'5:25-5:35',rpe:'RPE 4-5',desc:'Prima long run superiore ai 10km. Ritmo facile e costante.',splits:[{n:'km 1-3',pace:'5:40/km',desc:'Ingresso lento',cls:'easy'},{n:'km 4-9',pace:'5:30/km',desc:'Ritmo aerobico base',cls:'moderate'},{n:'km 10-12',pace:'5:25/km',desc:'Leggermente più sostenuto',cls:'moderate'}],stats:['12km','5:25-5:35','~66min','RPE 4-5'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['2h prima: pasto completo carboidrati','Pasta o riso in bianco','600ml acqua nelle 2h precedenti'],during:['Acqua ogni 2-3km','Gel o banana al km 7','Elettroliti opzionali'],post:['Pasto completo ricco di carboidrati','Proteine magre: pollo/tonno/uova','Frutta ricca di antiossidanti']}},
+  {w:3,d:'Lun 29 giu',type:'easy',tag:'tag-easy',tagLabel:'Easy Run',name:'Corsa Facile Rigenerativa',km:'6',pace:'5:40',rpe:'RPE 3',desc:'Giorno di recupero attivo. Ritmo molto facile, focus su respirazione e forma.',splits:null,stats:['6km','5:40/km','~34min','RPE 3'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['30min prima: frutta + qualche crackers','Leggero e digeribile'],during:['Acqua, massimo 500ml'],post:['Pasto normale bilanciato','Proteine + verdure + carboidrati moderati']}},
+  {w:3,d:'Mer 1 lug',type:'intervals',tag:'tag-intervals',tagLabel:'Ripetute',name:'Ripetute Medie 4×800m',km:'8',pace:'Variabile',rpe:'RPE 7-8',desc:'4 ripetute da 800m, recupero 2min tra ogni ripetuta.',splits:[{n:'Riscaldamento',pace:'5:40/km',desc:'2km graduale',cls:'easy'},{n:'800m ×1',pace:'4:35/km',desc:'Primo giro di controllo',cls:'fast'},{n:'Recupero',pace:'Walk/jog',desc:'2 minuti tra ogni ripetuta',cls:'easy'},{n:'800m ×2',pace:'4:30/km',desc:'Sale il ritmo',cls:'fast'},{n:'800m ×3',pace:'4:25/km',desc:'Mantieni qualità',cls:'fast'},{n:'800m ×4',pace:'4:25/km',desc:'Finisci forte',cls:'fast'},{n:'Defaticamento',pace:'5:50/km',desc:'1.5km easy',cls:'easy'}],stats:['8km','4:25-5:40','~45min','RPE 7-8'],statKeys:['distanza','ritmo range','tempo est.','sforzo'],nutri:{pre:['60min prima: banana + caffè','Idratazione preventiva abbondante'],during:['Acqua ai recuperi (100-150ml)','Gel se caldo eccessivo'],post:['20-25g proteine entro 20min','Frullato proteico + carboidrati','Pasto completo entro 1.5h']}},
+  {w:3,d:'Sab 4 lug',type:'long',tag:'tag-long',tagLabel:'Long Run',name:'Long Run 14km',km:'14',pace:'5:25',rpe:'RPE 4-5',desc:'Prima uscita lunga importante. Pratica gel e idratazione.',splits:[{n:'km 1-4',pace:'5:40/km',desc:'Avvio conservativo',cls:'easy'},{n:'km 5-11',pace:'5:25/km',desc:'Ritmo gara target',cls:'moderate'},{n:'km 12-14',pace:'5:20/km',desc:'Progressione finale',cls:'fast'}],stats:['14km','5:20-5:40','~76min','RPE 4-5'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['2h prima: porridge avena + miele + frutta','700ml acqua'],during:['Gel al km 7 + acqua','Acqua ogni 3km','Electroliti: 1 compressa'],post:['Pasto abbondante entro 45min','Riso + proteina + grasso sano (avocado)','Frutta ricca vitamina C']}},
+  {w:4,d:'Lun 6 lug',type:'easy',tag:'tag-easy',tagLabel:'Easy Run',name:'Easy Run + Forza Core',km:'7',pace:'5:30',rpe:'RPE 3-4',desc:'Corsa facile con 10min di esercizi core a fine uscita (plank, mountain climbers).',splits:null,stats:['7km','5:30/km','~38min','RPE 3-4'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['30min prima: fette biscottate + miele'],during:['Acqua a piacere'],post:['Yogurt greco + noci + miele','Proteine e grassi buoni per il recupero']}},
+  {w:4,d:'Mer 8 lug',type:'tempo',tag:'tag-tempo',tagLabel:'Tempo Run',name:'Tempo Run 25min',km:'8',pace:'4:45-4:55',rpe:'RPE 6-7',desc:'25 minuti alla soglia lattato. Lavorare sulla costanza.',splits:[{n:'Riscaldamento',pace:'5:40/km',desc:'2km easy',cls:'easy'},{n:'Tempo 0-10min',pace:'4:55/km',desc:'Stabilizza il ritmo',cls:'moderate'},{n:'Tempo 10-20min',pace:'4:50/km',desc:'Zona di comfort scomodo',cls:'moderate'},{n:'Tempo 20-25min',pace:'4:45/km',desc:'Push finale',cls:'fast'},{n:'Defaticamento',pace:'5:50/km',desc:'1.5km',cls:'easy'}],stats:['8km','4:45-5:40','~42min','RPE 6-7'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['45min prima: banana + caffè','Carboidrati rapidi'],during:['Acqua al defaticamento'],post:['Shake proteico + banana','Reidratazione con sports drink']}},
+  {w:4,d:'Sab 11 lug',type:'long',tag:'tag-long',tagLabel:'Long Run',name:'Long Run 15km',km:'15',pace:'5:25',rpe:'RPE 4-5',desc:'Nuova distanza record. Mantieni ritmo aerobico, pratica il piano nutrizionale di gara.',splits:[{n:'km 1-4',pace:'5:40/km',desc:'Avvio lento',cls:'easy'},{n:'km 5-12',pace:'5:25/km',desc:'Ritmo aerobico sostenuto',cls:'moderate'},{n:'km 13-15',pace:'5:15/km',desc:'Progressione finale',cls:'fast'}],stats:['15km','5:15-5:40','~82min','RPE 4-5'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['2h prima: pasto ricco di carboidrati'],during:['Gel km 7 e km 12','Acqua ogni 3km','Elettroliti se >28°C'],post:['Pasto completo entro 45min','Proteine: 1.8g/kg peso corporeo','Recupero attivo: stretching 10min']}},
+  {w:5,d:'Lun 13 lug',type:'easy',tag:'tag-easy',tagLabel:'Easy Run',name:'Recovery Run',km:'6',pace:'5:40',rpe:'RPE 3',desc:'Corsa di recupero leggera. Gambe pesanti dopo il 15km? Rallenta pure.',splits:null,stats:['6km','5:40/km','~34min','RPE 3'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['Frutta fresca'],during:['Acqua'],post:['Pasto normale bilanciato']}},
+  {w:5,d:'Mer 15 lug',type:'intervals',tag:'tag-intervals',tagLabel:'Ripetute',name:'Ripetute 5×1000m',km:'9',pace:'Variabile',rpe:'RPE 7-8',desc:'5 ripetute da 1km al ritmo di gara o leggermente più veloci.',splits:[{n:'Riscaldamento',pace:'5:40/km',desc:'2km easy',cls:'easy'},{n:'1000m ×1',pace:'4:40/km',desc:'Controllo e ritmo',cls:'fast'},{n:'Recupero',pace:'Walk/jog',desc:'90s-2min tra ripetute',cls:'easy'},{n:'1000m ×2',pace:'4:35/km',desc:'Trova il groove',cls:'fast'},{n:'1000m ×3',pace:'4:35/km',desc:'Mantieni la qualità',cls:'fast'},{n:'1000m ×4',pace:'4:35/km',desc:'Resistenza mentale',cls:'fast'},{n:'1000m ×5',pace:'4:30/km',desc:'Finale forte',cls:'fast'},{n:'Defaticamento',pace:'5:50/km',desc:'1.5km',cls:'easy'}],stats:['9km','4:30-5:40','~50min','RPE 7-8'],statKeys:['distanza','ritmo range','tempo est.','sforzo'],nutri:{pre:['60min prima: toast + marmellata + caffè'],during:['Gel o banana al recupero centrale','Acqua abbondante'],post:['25g proteine + 60g carbo entro 30min','Pasto completo ricco entro 2h']}},
+  {w:5,d:'Sab 18 lug',type:'long',tag:'tag-long',tagLabel:'Long Run',name:'Long Run 16km',km:'16',pace:'5:20-5:30',rpe:'RPE 4-5',desc:'Continua a costruire. Ultimo lungo prima della settimana di test a ritmo gara.',splits:[{n:'km 1-3',pace:'5:40/km',desc:'Warm-up facile',cls:'easy'},{n:'km 4-13',pace:'5:25/km',desc:'Ritmo aerobico',cls:'moderate'},{n:'km 14-16',pace:'5:10/km',desc:'Finale progressivo',cls:'fast'}],stats:['16km','5:10-5:40','~87min','RPE 4-5'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['2h prima: porridge abbondante + frutta'],during:['Gel km 7 e km 13','Acqua ogni 2-3km','Banana a metà se possibile'],post:['Pasto ricco + dessert proteico','Riposo assoluto nel pomeriggio']}},
+  {w:6,d:'Lun 20 lug',type:'easy',tag:'tag-easy',tagLabel:'Easy Run',name:'Easy Run Attivo',km:'7',pace:'5:30',rpe:'RPE 3-4',desc:'Ripresa con corsa facile. 4×100m strides alla fine.',splits:[{n:'km 1-7',pace:'5:35/km',desc:'Corsa conversazionale',cls:'easy'},{n:'Strides ×4',pace:'4:15/km',desc:'100m veloci con walk recovery',cls:'fast'}],stats:['7.4km','5:35/km','~41min','RPE 3-4'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['Banana pre-run'],during:['Acqua'],post:['Yogurt greco + cereali']}},
+  {w:6,d:'Mer 22 lug',type:'tempo',tag:'tag-tempo',tagLabel:'Tempo Run',name:'Tempo Fartlek 30min',km:'8',pace:'Variabile',rpe:'RPE 6-7',desc:'Fartlek: 30min con alternanza 3min veloce / 2min facile per 6 cicli.',splits:[{n:'Riscaldamento',pace:'5:40/km',desc:'1.5km easy',cls:'easy'},{n:'Fast ×1-3',pace:'4:40/km',desc:'3min ognuno, sforzo controllato',cls:'fast'},{n:'Easy ×1-3',pace:'5:30/km',desc:'2min recupero attivo',cls:'easy'},{n:'Fast ×4-6',pace:'4:35/km',desc:'Ultimi tre giri più svelti',cls:'fast'},{n:'Easy ×4-6',pace:'5:25/km',desc:'Recupero 2min',cls:'easy'},{n:'Defaticamento',pace:'5:50/km',desc:'1km',cls:'easy'}],stats:['8km','4:35-5:40','~43min','RPE 6-7'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['45min prima: banana + caffè'],during:['Acqua ai recuperi'],post:['Shake proteico + frutta','Pasto con carboidrati complessi']}},
+  {w:6,d:'Sab 25 lug',type:'long',tag:'tag-long',tagLabel:'Long Run',name:'Long Run 18km',km:'18',pace:'5:20-5:25',rpe:'RPE 5',desc:'Primo long run a ritmo-gara. Partenza lenta, km centrali a ~5:30, finale a 5:15.',splits:[{n:'km 1-3',pace:'5:45/km',desc:'Partenza conservativa',cls:'easy'},{n:'km 4-10',pace:'5:30/km',desc:'Ritmo mezza maratona',cls:'moderate'},{n:'km 11-15',pace:'5:20/km',desc:'Mantieni la pressione',cls:'moderate'},{n:'km 16-18',pace:'5:10/km',desc:'Simulazione finale gara',cls:'fast'}],stats:['18km','5:10-5:45','~98min','RPE 5'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['2h prima: pasto carboidrati abbondante'],during:['Gel km 6, km 11, km 16','Acqua ogni 2km','Elettroliti obbligatori'],post:['Pasto completo entro 30min','Massaggio gambe o ice bath','Sonno prioritario']}},
+  {w:7,d:'Lun 27 lug',type:'easy',tag:'tag-easy',tagLabel:'Easy Run',name:'Recovery Run Facile',km:'6',pace:'5:45',rpe:'RPE 2-3',desc:'Recupero dopo il lungo weekend. Ritmo molto facile, ascolta il corpo.',splits:null,stats:['6km','5:45/km','~34min','RPE 2-3'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['Frutta'],during:['Acqua'],post:['Pasto leggero e nutriente']}},
+  {w:7,d:'Mer 29 lug',type:'intervals',tag:'tag-intervals',tagLabel:'Ripetute',name:'Ripetute Lunghe 3×2000m',km:'10',pace:'Variabile',rpe:'RPE 7-8',desc:'3×2km a ritmo gara o leggermente più veloce. Recupero 3min.',splits:[{n:'Riscaldamento',pace:'5:40/km',desc:'2km easy',cls:'easy'},{n:'2000m ×1',pace:'4:45/km',desc:'Primo giro, controllo sforzo',cls:'fast'},{n:'Recupero 1',pace:'Walk/jog',desc:'3 minuti',cls:'easy'},{n:'2000m ×2',pace:'4:40/km',desc:'Aumenta confidenza',cls:'fast'},{n:'Recupero 2',pace:'Walk/jog',desc:'3 minuti',cls:'easy'},{n:'2000m ×3',pace:'4:40/km',desc:'Mantieni il ritmo gara',cls:'fast'},{n:'Defaticamento',pace:'5:50/km',desc:'1.5km',cls:'easy'}],stats:['10km','4:40-5:40','~55min','RPE 7-8'],statKeys:['distanza','ritmo range','tempo est.','sforzo'],nutri:{pre:['60-90min prima: pasto leggero carbo','Caffè 45min prima'],during:['Gel al secondo recupero','Acqua abbondante'],post:['Shake proteico + banana entro 20min','Pasto completo ricco']}},
+  {w:7,d:'Sab 1 ago',type:'long',tag:'tag-long',tagLabel:'Long Run',name:'Long Run 19km',km:'19',pace:'5:20-5:30',rpe:'RPE 5',desc:'Penultima long run di volume massimo. Test completo del piano gara.',splits:[{n:'km 1-4',pace:'5:45/km',desc:'Start conservativo',cls:'easy'},{n:'km 5-14',pace:'5:25/km',desc:'Ritmo gara target',cls:'moderate'},{n:'km 15-17',pace:'5:15/km',desc:'Push moderato',cls:'fast'},{n:'km 18-19',pace:'5:10/km',desc:'Finale simulazione',cls:'fast'}],stats:['19km','5:10-5:45','~104min','RPE 5'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['2h prima: colazione abbondante carbo'],during:['Gel km 6, 11, 16','Acqua ogni 2km','Sales minerali km 10'],post:['Pasto ricchissimo entro 30min','Recupero massimo: no sport per 48h','Piedi elevati, massaggio']}},
+  {w:8,d:'Lun 3 ago',type:'easy',tag:'tag-easy',tagLabel:'Easy Run',name:'Easy Run + Strides',km:'7',pace:'5:30',rpe:'RPE 3-4',desc:'Corsa facile con 6 strides da 100m. Mantieni la freschezza dopo il lungo.',splits:[{n:'km 1-7',pace:'5:35/km',desc:'Easy facile',cls:'easy'},{n:'Strides ×6',pace:'4:10/km',desc:'100m esplosivi + walk recovery',cls:'fast'}],stats:['7.6km','5:35/km','~43min','RPE 3-4'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['Banana'],during:['Acqua'],post:['Yogurt + frutta + cereali']}},
+  {w:8,d:'Mer 5 ago',type:'tempo',tag:'tag-tempo',tagLabel:'Tempo Run',name:'Tempo Run 30min',km:'9',pace:'4:45-4:50',rpe:'RPE 6-7',desc:'30 minuti continui al ritmo soglia lattato.',splits:[{n:'Riscaldamento',pace:'5:40/km',desc:'2km easy',cls:'easy'},{n:'Tempo 0-10min',pace:'4:55/km',desc:'Ingresso alla soglia',cls:'moderate'},{n:'Tempo 10-22min',pace:'4:50/km',desc:'Blocco centrale costante',cls:'moderate'},{n:'Tempo 22-30min',pace:'4:45/km',desc:'Finale deciso',cls:'fast'},{n:'Defaticamento',pace:'5:50/km',desc:'1.5km',cls:'easy'}],stats:['9km','4:45-5:40','~48min','RPE 6-7'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['45min prima: banana + caffè + acqua'],during:['Acqua al warm-up e cool-down'],post:['Proteine + carbo complessi','Recupero adeguato: dormire almeno 8h']}},
+  {w:8,d:'Sab 8 ago',type:'long',tag:'tag-long',tagLabel:'Long Run',name:'Long Run Picco 20km',km:'20',pace:'5:20-5:30',rpe:'RPE 5-6',desc:'Distanza massima del piano. Tratta come una mezza simulazione.',splits:[{n:'km 1-4',pace:'5:45/km',desc:'Partenza molto conservativa',cls:'easy'},{n:'km 5-12',pace:'5:30/km',desc:'Ritmo gara target 21K',cls:'moderate'},{n:'km 13-17',pace:'5:20/km',desc:'Fase centrale gara',cls:'moderate'},{n:'km 18-20',pace:'5:10/km',desc:'Sprint finale simulato',cls:'fast'}],stats:['20km','5:10-5:45','~110min','RPE 5-6'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['2.5h prima: pasto abbondante pasta/riso','Carboidrati massimizzati','Buona idratazione dal giorno prima'],during:['Gel km 6, 11, 16 (caffeinato l\'ultimo)','Acqua ogni 2km','Elettroliti e sale ai km 10 e 16'],post:['PASTO FONDAMENTALE entro 30min','Carboidrati + proteine + grassi buoni','Recupero totale 48-72h']}},
+  {w:9,d:'Lun 10 ago',type:'easy',tag:'tag-easy',tagLabel:'Easy Run',name:'Recovery Run Totale',km:'5',pace:'5:50',rpe:'RPE 2',desc:'Post-picco: corsa leggerissima. Non importa il tempo, importa recuperare.',splits:null,stats:['5km','5:50/km','~29min','RPE 2'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['Nessuna preparazione speciale'],during:['Acqua'],post:['Pasto bilanciato normale']}},
+  {w:9,d:'Mer 12 ago',type:'intervals',tag:'tag-intervals',tagLabel:'Ripetute',name:'Ripetute Veloci 8×400m',km:'8',pace:'Variabile',rpe:'RPE 7-8',desc:'Volume ridotto, qualità aumentata. 8 ripetute brevi e veloci.',splits:[{n:'Riscaldamento',pace:'5:40/km',desc:'2km easy',cls:'easy'},{n:'400m ×1-2',pace:'4:20/km',desc:'Avvio controllato',cls:'fast'},{n:'Recupero',pace:'6:30/km',desc:'200m jog tra ogni ripetuta',cls:'easy'},{n:'400m ×3-6',pace:'4:15/km',desc:'Ritmo gara 5K',cls:'fast'},{n:'400m ×7-8',pace:'4:10/km',desc:'Ultimi due: massima qualità',cls:'fast'},{n:'Defaticamento',pace:'5:50/km',desc:'1km easy',cls:'easy'}],stats:['8km','4:10-5:40','~44min','RPE 7-8'],statKeys:['distanza','ritmo range','tempo est.','sforzo'],nutri:{pre:['60min prima: banana + caffè'],during:['Acqua ai recuperi'],post:['Shake proteico rapido','Pasto completo ricco']}},
+  {w:9,d:'Sab 15 ago',type:'long',tag:'tag-long',tagLabel:'Long Run',name:'Long Run 16km',km:'16',pace:'5:20-5:25',rpe:'RPE 4-5',desc:'Volume ridotto rispetto al picco. Pratica ritmo gara nei km centrali.',splits:[{n:'km 1-3',pace:'5:40/km',desc:'Avvio facile',cls:'easy'},{n:'km 4-13',pace:'5:20/km',desc:'Ritmo gara mezza',cls:'moderate'},{n:'km 14-16',pace:'5:15/km',desc:'Finale solido',cls:'fast'}],stats:['16km','5:15-5:40','~87min','RPE 4-5'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['2h prima: colazione normale'],during:['Gel km 8, acqua ogni 3km'],post:['Pasto completo standard']}},
+  {w:10,d:'Lun 17 ago',type:'easy',tag:'tag-easy',tagLabel:'Easy Run',name:'Easy Run Leggero',km:'6',pace:'5:35',rpe:'RPE 3',desc:'Inizio del taper. Distanze ridotte, qualità mantenuta.',splits:null,stats:['6km','5:35/km','~34min','RPE 3'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['Normale routine'],during:['Acqua'],post:['Pasto bilanciato']}},
+  {w:10,d:'Mer 19 ago',type:'tempo',tag:'tag-tempo',tagLabel:'Tempo Run',name:'Tempo Ridotto 20min',km:'7',pace:'4:45-4:55',rpe:'RPE 6',desc:'Taper: stesso ritmo dei tempo precedenti, ma durata ridotta.',splits:[{n:'Riscaldamento',pace:'5:40/km',desc:'2km',cls:'easy'},{n:'Tempo 20min',pace:'4:50/km',desc:'Ritmo soglia costante',cls:'moderate'},{n:'Defaticamento',pace:'5:50/km',desc:'1.5km',cls:'easy'}],stats:['7km','4:50/km','~38min','RPE 6'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['Normale pre-run routine'],during:['Acqua'],post:['Pasto bilanciato con carbo e proteine']}},
+  {w:10,d:'Sab 22 ago',type:'long',tag:'tag-long',tagLabel:'Long Run',name:'Long Run Taper 13km',km:'13',pace:'5:25',rpe:'RPE 4',desc:'Long run taper: distanza ridotta a 13km. Focus sul ritmo gara.',splits:[{n:'km 1-3',pace:'5:40/km',desc:'Partenza facile',cls:'easy'},{n:'km 4-10',pace:'5:25/km',desc:'Ritmo mezza maratona',cls:'moderate'},{n:'km 11-13',pace:'5:15/km',desc:'Conclusione',cls:'fast'}],stats:['13km','5:15-5:40','~71min','RPE 4'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['2h prima: colazione solida'],during:['Gel km 8, acqua ogni 3km'],post:['Pasto normale: buon recupero']}},
+  {w:11,d:'Lun 24 ago',type:'easy',tag:'tag-easy',tagLabel:'Easy Run',name:'Easy Run 5km',km:'5',pace:'5:40',rpe:'RPE 3',desc:'Distanza minima. Gambe leggere, mente fresca. Visualizza la gara.',splits:null,stats:['5km','5:40/km','~28min','RPE 3'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['Frutta'],during:['Acqua'],post:['Pasto normale']}},
+  {w:11,d:'Mer 26 ago',type:'intervals',tag:'tag-intervals',tagLabel:'Ripetute',name:'Ripetute Brevi 4×400m',km:'6',pace:'Variabile',rpe:'RPE 6-7',desc:'Solo 4 ripetute brevi per mantenere la reattività muscolare.',splits:[{n:'Riscaldamento',pace:'5:40/km',desc:'1.5km easy',cls:'easy'},{n:'400m ×1-4',pace:'4:15/km',desc:'Veloci e controllate',cls:'fast'},{n:'Recupero',pace:'Walk',desc:'90s walk tra ogni ripetuta',cls:'easy'},{n:'Defaticamento',pace:'5:50/km',desc:'1km',cls:'easy'}],stats:['6km','4:15-5:40','~33min','RPE 6-7'],statKeys:['distanza','ritmo range','tempo est.','sforzo'],nutri:{pre:['Banana + caffè 45min prima'],during:['Acqua'],post:['Leggero pasto proteico']}},
+  {w:11,d:'Sab 29 ago',type:'easy',tag:'tag-easy',tagLabel:'Easy Run',name:'Ultima Uscita Pre-Gara 8km',km:'8',pace:'5:30',rpe:'RPE 3-4',desc:'Ultima corsa prima della gara. 2km al ritmo gara nel mezzo per sentire il passo.',splits:[{n:'km 1-3',pace:'5:40/km',desc:'Easy totale',cls:'easy'},{n:'km 4-5',pace:'5:20/km',desc:'2km al ritmo gara',cls:'moderate'},{n:'km 6-8',pace:'5:35/km',desc:'Ritorno easy',cls:'easy'}],stats:['8km','5:20-5:40','~44min','RPE 3-4'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['Normale colazione'],during:['Acqua'],post:['Pasto ricco di carboidrati','Inizia carbo-loading per la gara']}},
+  {w:12,d:'Lun 31 ago',type:'easy',tag:'tag-easy',tagLabel:'Easy Run',name:'Jogging Attivazione 4km',km:'4',pace:'5:45',rpe:'RPE 2',desc:'Ultima settimana. Solo attivazione. Cammina più che corri se necessario.',splits:null,stats:['4km','5:45/km','~23min','RPE 2'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['Normale'],during:['Acqua'],post:['Carbo-loading serale: pasta abbondante']}},
+  {w:12,d:'Mer 2 set',type:'easy',tag:'tag-easy',tagLabel:'Easy Run',name:'Corsa Leggera + Strides',km:'4',pace:'5:40',rpe:'RPE 2-3',desc:'Ultimi 4km più 4 strides da 100m. Senti le gambe pronte e reattive.',splits:[{n:'km 1-4',pace:'5:40/km',desc:'Facile facile',cls:'easy'},{n:'Strides ×4',pace:'4:10/km',desc:'100m esplosivi per sentire il ritmo',cls:'fast'}],stats:['4.4km','5:40/km','~25min','RPE 2-3'],statKeys:['distanza','ritmo','tempo est.','sforzo'],nutri:{pre:['Colazione normale'],during:['Acqua'],post:['Carbo-loading: riso o pasta','Idratazione massimale: 2.5L acqua oggi']}},
+  {w:12,d:'Sab 5 set',type:'race',tag:'tag-race',tagLabel:'🏁 GARA!',name:'MEZZA MARATONA 21.1km',km:'21.1',pace:'~5:42',rpe:'RPE 8-9',desc:'Il grande giorno! Obiettivo: ~2:00:00. Gestisci la partenza, vai a ritmo.',splits:[{n:'km 1-3',pace:'5:50/km',desc:'Partenza conservativa',cls:'easy'},{n:'km 4-8',pace:'5:40/km',desc:'Stabilizza il tuo ritmo',cls:'easy'},{n:'km 9-14',pace:'5:35/km',desc:'Zona di ritmo gara',cls:'moderate'},{n:'km 15-18',pace:'5:30/km',desc:'Mantieni la pressione',cls:'moderate'},{n:'km 19-20',pace:'5:20/km',desc:'Inizia a spingere',cls:'fast'},{n:'km 21-21.1',pace:'4:50/km',desc:'SPRINT FINALE!',cls:'fast'}],stats:['21.1km','~5:42/km','~2:00:00','RPE 8-9'],statKeys:['distanza','ritmo target','obiettivo','sforzo'],nutri:{pre:['3h prima: pasta/riso abbondante + caffè','Gel 20min prima della partenza','Idratazione mattutina: 500ml acqua'],during:['Gel km 6, 12, 17 (caffeinato)','Acqua ai ristori (ogni 3-4km)','Elettroliti al km 10 e 16'],post:['Subito: sports drink + banana','30min: pasto proteico e carbo','FESTEGGIA: hai completato la mezza! 🎉']}}
+];
+
+function closePanel(){document.getElementById('modal-overlay').classList.remove('open')}
+function closeModal(e){if(e.target===document.getElementById('modal-overlay'))closePanel()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
+
+function openDetail(idx){
+  const w=WORKOUTS[idx];
+  document.getElementById('dp-title').textContent=w.name;
+  document.getElementById('dp-date').textContent=`${w.d} · Settimana ${w.w}`;
+  let splitsHTML='';
+  if(w.splits){
+    splitsHTML=`<div class="dp-section-title">SPLITS E RITMI</div><div class="splits-row">`;
+    w.splits.forEach(s=>{splitsHTML+=`<div class="split-pill ${s.cls}"><div class="split-n">${s.n}</div><div class="split-pace">${s.pace}</div><div class="split-desc">${s.desc}</div></div>`});
+    splitsHTML+='</div>';
+  }
+  const n=w.nutri;
+  const nutriHTML=`<div class="dp-section-title">NUTRIZIONE</div><div class="nutrition-grid">
+    <div class="nutri-block"><div class="nutri-label pre">PRE-RUN</div><ul class="nutri-items">${n.pre.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div class="nutri-block"><div class="nutri-label during">DURANTE</div><ul class="nutri-items">${n.during.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div class="nutri-block"><div class="nutri-label post">POST-RUN</div><ul class="nutri-items">${n.post.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+  </div>`;
+  const statsHTML=`<div class="dp-grid">${w.stats.map((s,i)=>`<div class="dp-stat"><div class="dp-stat-val">${s}</div><div class="dp-stat-key">${w.statKeys[i]}</div></div>`).join('')}</div>`;
+  document.getElementById('dp-body').innerHTML=statsHTML+splitsHTML+nutriHTML;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function buildWeeks(){
+  const container=document.getElementById('weeks-container');
+  for(let wk=1;wk<=12;wk++){
+    const phase=PHASES[wk];
+    const weekWorkouts=WORKOUTS.filter(w=>w.w===wk);
+    const block=document.createElement('div');
+    block.className='week-block';
+    block.innerHTML=`<div class="week-num"><span>SETTIMANA ${wk<10?'0'+wk:wk}</span><span class="week-phase-badge ${phase.cls}">${phase.name}</span></div><div class="section-line"></div>`;
+    const grid=document.createElement('div');
+    grid.className='days-grid';
+    weekWorkouts.forEach(w=>{
+      const globalIdx=WORKOUTS.indexOf(w);
+      const isCompleted=globalIdx<2;
+      const card=document.createElement('div');
+      card.className=`day-card${isCompleted?' completed':''}${w.type==='race'?' race-card':''}`;
+      card.innerHTML=`<div class="day-date">${w.d}</div><span class="day-type-tag ${w.tag}">${w.tagLabel}</span><div class="day-name">${w.name}</div><div class="day-meta"><div class="meta-item"><span class="meta-val">${w.km}</span><span class="meta-key">km</span></div><div class="meta-item"><span class="meta-val">${w.pace}</span><span class="meta-key">ritmo</span></div><div class="meta-item"><span class="meta-val">${w.rpe}</span><span class="meta-key">sforzo</span></div></div><div class="day-desc">${w.desc}</div>`;
+      card.addEventListener('click',()=>openDetail(globalIdx));
+      grid.appendChild(card);
+    });
+    block.appendChild(grid);
+    container.appendChild(block);
+  }
+}
+buildWeeks();
+</script>
+</body>
+</html>
